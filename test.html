@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF-Lib Example</title>
+    <script src="pdf-lib.min.js"></script>
+</head>
+<body>
+    <h1>PDF-Lib Example</h1>
+    <button id="createPdfButton">Create PDF</button>
+
+    <script>
+        document.getElementById('createPdfButton').addEventListener('click', async () => {
+            const { PDFDocument, rgb, degrees, StandardFonts } = PDFLib;
+
+            // Crear un nuevo documento PDF
+            const pdfDoc = await PDFDocument.create();
+            const page = pdfDoc.addPage();
+
+            // Dibujar texto en la página con rotación
+            page.drawText('Hola, mundo!', {
+                x: 50,
+                y: 750,
+                size: 24,
+                font: await pdfDoc.embedFont(StandardFonts.Helvetica),
+                color: rgb(0, 0.53, 0.71),
+                rotate: degrees(45), // Rotar el texto 45 grados
+            });
+
+            // Convertir el PDF a un array de bytes
+            const pdfBytes = await pdfDoc.save();
+
+            // Crear un blob y un enlace de descarga
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'example.pdf';
+            link.click();
+        });
+    </script>
+</body>
+</html>
